@@ -32,13 +32,13 @@
 ```
 .
 ├── data
-│   ├── processed               # Очищенные и обработанные данные
-│   └── raw                     # Исходные файлы
+│   ├── features               # Айтемные и Юзерские фичи
+│   └── datasets                     # Датасеты с посчитанными фичами
 ├── models                      # Сохранённые модели 
 ├── notebooks
-│   ├── 01_eda.ipynb            # EDA
-│   ├── 02_baseline.ipynb       # Baseline-модель
-│   └── 03_experiments.ipynb    # Эксперименты и ablation study
+│   ├── yambda_eda.ipynb            # EDA
+│   ├── yambda_baseline.ipynb       # Baseline-модели
+│   └── yambda_experiments.ipynb    # Эксперименты
 ├── presentation                # Презентация для защиты
 ├── report
 │   ├── images                  # Изображения для отчёта
