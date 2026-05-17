@@ -91,7 +91,7 @@ def get_ground_truth(
 
     return ground_truth
 
-# TODO отрефакторить
+
 def add_als_dot_product_features(
     df: pd.DataFrame,
     als_decomposition_names: list[str],
@@ -99,18 +99,17 @@ def add_als_dot_product_features(
     item_embeddings_path: str
 ) -> pd.DataFrame:
     """
-    Adds new features to the DataFrame based on the scalar product of ALS user and item embeddings.
-    Optimized for memory by using df.apply with direct map lookups instead of intermediate large Series of lists.
+    Добавляет новые признаки в DataFrame на основе скалярного произведения пользовательских и айтем-эмбеддингов ALS.
 
     Args:
-        df (pd.DataFrame): The input DataFrame (e.g., train_df) containing 'uid' and 'item_id'.
-        als_decomposition_names (list[str]): A list of ALS decomposition names (column names
-                                            in the embeddings files) to use for feature creation.
-        user_embeddings_path (str): Path to the user embeddings parquet file.
-        item_embeddings_path (str): Path to the item embeddings parquet file.
+        df (pd.DataFrame): Входной DataFrame (например, train_df), содержащий колонки 'uid' и 'item_id'.
+        als_decomposition_names (list[str]): Список названий ALS-разложений (названия колонок
+                                            в файлах эмбеддингов), которые используются для создания признаков.
+        user_embeddings_path (str): Путь к parquet-файлу с пользовательскими эмбеддингами.
+        item_embeddings_path (str): Путь к parquet-файлу с айтем-эмбеддингами.
 
     Returns:
-        pd.DataFrame: The DataFrame with added scalar product features.
+        pd.DataFrame: DataFrame с добавленными признаками скалярного произведения.
     """
     df_with_features = df
     print(f"Размер исходного df_with_features: {sys.getsizeof(df_with_features) // 1024 // 1024}MB")
@@ -180,3 +179,25 @@ def add_als_dot_product_features(
         print(f"Отображения эмбеддингов для {decomp_name} удалены из памяти.")
 
     return df_with_features
+
+def add_counters_features(
+    df: pd.DataFrame,
+    counter_names: list[str],
+    counters_path: str
+) -> pd.DataFrame:
+    """
+    Джойнит айтемные счётчики в df по колонке 'item_id'.
+
+    Args:
+        df (pd.DataFrame): Входной DataFrame с колонкой 'item_id'.
+        counter_names (list[str]): Список названий счётчиков (колонок из файла счётчиков).
+        counters_path (str): Путь к parquet-файлу со счётчиками (индекс — item_id).
+
+    Returns:
+        pd.DataFrame: DataFrame с добавленными колонками счётчиков.
+    """
+    counters_df = pd.read_parquet(counters_path, columns=counter_names)
+
+    return df.merge(counters_df, on='item_id', how='left')
+    
+    
